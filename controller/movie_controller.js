@@ -52,6 +52,24 @@ class MovieController {
       next(error);
     }
   }
+
+  static async uploadImage(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      // Check if the movie exists
+      const movie = await Movie.findByPk(id);
+      if (!movie) throw { name: "notFound" };
+
+      // Update the 'photo' field in the database with the filename of the uploaded image
+      movie.photo = req.file.filename;
+      await movie.save();
+
+      res.status(200).json({ message: "Image uploaded successfully" });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = MovieController;
